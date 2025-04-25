@@ -27,9 +27,9 @@ void PhoneBook::addContact()
 	do {
 		std::cout << "enter the Last Name of the contact: ";
 		std::getline(std::cin, str);
-	
-	if (std::cin.eof())
-			eofExit();} while (str.empty());
+		if (std::cin.eof())
+			eofExit();
+		} while (str.empty());
 	contact.setLastName(str);
 	str.clear();
 
@@ -37,26 +37,27 @@ void PhoneBook::addContact()
 		std::cout << "enter the Nickname of the contact: ";
 		std::getline(std::cin, str);
 	
-	if (std::cin.eof())
-			eofExit();} while (str.empty());
+		if (std::cin.eof())
+			eofExit();
+		} while (str.empty());
 	contact.setNickname(str);
 	str.clear();
 
 	do {
 		std::cout << "enter the Phone Number of the contact: ";
 		std::getline(std::cin, str);
-	
-	if (std::cin.eof())
-			eofExit();} while (str.empty());
+		if (std::cin.eof())
+			eofExit();
+		} while (str.empty());
 	contact.setPhoneNumber(str);
 	str.clear();
 
 	do {
 		std::cout << "enter the Darkest Secret of the contact: ";
 		std::getline(std::cin, str);
-	
-	if (std::cin.eof())
-			eofExit();} while (str.empty());
+		if (std::cin.eof())
+			eofExit();
+		} while (str.empty());
 	contact.setDarkestSecret(str);
 	str.clear();
 
