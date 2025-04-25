@@ -3,6 +3,9 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <cstdlib>
+#include <termios.h>
+#include <unistd.h>
 
 // colors
 #define GRN "\033[0;32m"
@@ -17,3 +20,4 @@
 #include "Contact.hpp"
 #include "PhoneBook.hpp"
 
+void eofExit();

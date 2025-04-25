@@ -18,6 +18,8 @@ void PhoneBook::addContact()
 	do {
 		std::cout << "enter the First Name of the contact: ";
 		std::getline(std::cin, str);
+		if (std::cin.eof())
+			eofExit();
 	} while (str.empty());
 	contact.setFirstName(str);
 	str.clear();
@@ -25,28 +27,36 @@ void PhoneBook::addContact()
 	do {
 		std::cout << "enter the Last Name of the contact: ";
 		std::getline(std::cin, str);
-	} while (str.empty());
+	
+	if (std::cin.eof())
+			eofExit();} while (str.empty());
 	contact.setLastName(str);
 	str.clear();
 
 	do {
 		std::cout << "enter the Nickname of the contact: ";
 		std::getline(std::cin, str);
-	} while (str.empty());
+	
+	if (std::cin.eof())
+			eofExit();} while (str.empty());
 	contact.setNickname(str);
 	str.clear();
 
 	do {
 		std::cout << "enter the Phone Number of the contact: ";
 		std::getline(std::cin, str);
-	} while (str.empty());
+	
+	if (std::cin.eof())
+			eofExit();} while (str.empty());
 	contact.setPhoneNumber(str);
 	str.clear();
 
 	do {
 		std::cout << "enter the Darkest Secret of the contact: ";
 		std::getline(std::cin, str);
-	} while (str.empty());
+	
+	if (std::cin.eof())
+			eofExit();} while (str.empty());
 	contact.setDarkestSecret(str);
 	str.clear();
 
@@ -125,9 +135,11 @@ void	PhoneBook::searchContact()
 		std::cout << "Enter the index of the contact to display (0-" 
 				  << this->contactCount - 1 << "): ";
 		std::getline(std::cin, input);
+		if (std::cin.eof())
+			eofExit();
 	} while (input.empty() || !is_str_digit(input));
 	
-	index = std::stoi(input);
+	index = atoi(input.c_str());
 	if (index < 0 || index >= this->contactCount) {
 		std::cout << RED << "Index out of range!" << END << std::endl;
 		return;
