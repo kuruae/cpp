@@ -14,12 +14,11 @@ INCLUDES := -Iincludes
 ########## FILES ##########
 SRC_DIR := srcs
 OBJ_DIR := objs
-SRC_FILES := $(SRC_DIR)/main.cpp \
-			 $(SRC_DIR)/PhoneBook.cpp \
-			 $(SRC_DIR)/Contact.cpp
+SRC_FILES := $(SRC_DIR)/Account.cpp \
+			 $(SRC_DIR)/tests.cpp
 
 OBJ_FILES := $(SRC_FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
-NAME := phonebook
+NAME := account
 
 ########## RULES ##########
 all: $(NAME)
