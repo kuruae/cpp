@@ -14,11 +14,11 @@ INCLUDES := -Iincludes
 ########## FILES ##########
 SRC_DIR := srcs
 OBJ_DIR := objs
-SRC_FILES := $(SRC_DIR)/Account.cpp \
-			 $(SRC_DIR)/tests.cpp
+SRC_FILES := $(SRC_DIR)/main.cpp \
+			 $(SRC_DIR)/Zombie.cpp
 
 OBJ_FILES := $(SRC_FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
-NAME := account
+NAME := zombie
 
 ########## RULES ##########
 all: $(NAME)
