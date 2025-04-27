@@ -16,7 +16,7 @@ SRC_DIR := srcs
 OBJ_DIR := objs
 SRC_FILES := $(SRC_DIR)/main.cpp \
 			 $(SRC_DIR)/Zombie.cpp \
-			 $(SRC_DIR)/buildZombies.cpp
+			 $(SRC_DIR)/zombieHorde.cpp
 
 OBJ_FILES := $(SRC_FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 NAME := zombie
