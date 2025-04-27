@@ -12,8 +12,7 @@ Zombie::~Zombie()
 	std::cout << YEL << this->_name << END " has been destructed" << std::endl;
 }
 
-Zombie*	newZombie( std::string name )
+void Zombie::announce()
 {
-	Zombie* zomb = new Zombie(name);
-	return (zomb);
+	std::cout << this->_name << ": BraiiiiiiinnnzzzZ..." << std::endl;
 }
