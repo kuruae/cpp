@@ -1,44 +1,44 @@
-########## COLORS ##########
-GREEN := \033[32m
-RED := \033[31m
-BLUE := \033[34m
-YELLOW := \033[33m
-RESET := \033[0m
-BOLD := \033[1m
-
-########## FLAGS ##########
-CXX := c++
-CXXFLAGS := -Wall -Wextra -Werror -std=c++98
-INCLUDES := -Iincludes
-
-########## FILES ##########
-SRC_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA := srcs
-OBJ_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA := objs
-SRC_FILES := $(SRC_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)/main.cpp
-
-OBJ_FILES := $(SRC_FILES:$(SRC_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)/%.cpp=$(OBJ_DIR)/%.o)
-NAME := sed
-
-########## RULES ##########
-all: $(NAME)
-
-$(NAME): $(OBJ_FILES)
-	@$(CXX) $(CXXFLAGS) -o $@ $^
-	@printf "$(GREEN)$(BOLD)[✓] $@ compiled successfully!$(RESET)\n"
-
-$(OBJ_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)/%.o: $(SRC_DIR)/%.cpp
-	@mkdir -p $(dir $@)
-	@$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
-	@printf "$(BLUE)Compiling $(BOLD)$<$(RESET)\n"
-
-clean:
-	@rm -rf $(OBJ_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
-	@printf "$(RED)[x] Object files cleaned.$(RESET)\n"
-
-fclean: clean
-	@rm -f $(NAME)
-	@printf "$(RED)[x] Executable $(NAME) removed.$(RESET)\n"
-
-re: fclean all
-
-.PHONY: all clean fclean re
+asd########## COLORS ##########
+asdGREEN := \033[32m
+asdRED := \033[31m
+asdBLUE := \033[34m
+asdYELLOW := \033[33m
+asdRESET := \033[0m
+asdBOLD := \033[1m
+asd
+asd########## FLAGS ##########
+asdCXX := c++
+asdCXXFLAGS := -Wall -Wextra -Werror -std=c++98
+asdINCLUDES := -Iincludes
+asd
+asd########## FILES ##########
+asdSRC_DIR := srcs
+asdOBJ_DIR := objs
+asdSRC_FILES := $(SRC_DIR)/main.cpp
+asd
+asdOBJ_FILES := $(SRC_FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+asdNAME := sed
+asd
+asd########## RULES ##########
+asdall: $(NAME)
+asd
+asd$(NAME): $(OBJ_FILES)
+asd	@$(CXX) $(CXXFLAGS) -o $@ $^
+asd	@printf "$(GREEN)$(BOLD)[✓] $@ compiled successfully!$(RESET)\n"
+asd
+asd$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+asd	@mkdir -p $(dir $@)
+asd	@$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+asd	@printf "$(BLUE)Compiling $(BOLD)$<$(RESET)\n"
+asd
+asdclean:
+asd	@rm -rf $(OBJ_DIR)
+asd	@printf "$(RED)[x] Object files cleaned.$(RESET)\n"
+asd
+asdfclean: clean
+asd	@rm -f $(NAME)
+asd	@printf "$(RED)[x] Executable $(NAME) removed.$(RESET)\n"
+asd
+asdre: fclean all
+asd
+asd.PHONY: all clean fclean re
