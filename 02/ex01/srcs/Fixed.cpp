@@ -59,3 +59,4 @@ std::ostream& operator<<(std::ostream& os, const Fixed& fixed)
 	os << fixed.toFloat();
 	return (os);
 }
+
