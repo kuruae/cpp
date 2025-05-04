@@ -4,9 +4,9 @@ ClapTrap::ClapTrap() : _name("default") {}
 
 ClapTrap::ClapTrap(const str& name) : 
 _name(name),
-_hp(HP),
-_energy(ENERGY),
-_ad(AD)
+_hp(CLAP_HP),
+_energy(CLAP_ENERGY),
+_ad(CLAP_AD)
 {
 	std::cout << "ClapTrap constructor called" << std::endl;
 }

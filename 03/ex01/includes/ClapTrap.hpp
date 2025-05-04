@@ -3,10 +3,11 @@
 #include <iostream>
 #include <string>
 
+#define CLAP_HP 10
+#define CLAP_ENERGY 10
+#define CLAP_AD 0
+
 typedef std::string str;
-#define HP 10
-#define ENERGY 10
-#define AD 0
 
 class ClapTrap
 {
@@ -21,7 +22,7 @@ public:
 	void	takeDamage(unsigned int amount);
 	void	beRepaired(unsigned int amount);
 
-private:
+protected:
 	str		_name;
 	int		_hp;
 	int		_energy;
