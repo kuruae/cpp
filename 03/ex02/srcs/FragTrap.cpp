@@ -20,6 +20,17 @@ FragTrap::~FragTrap()
 	std::cout << "FragTrap Destructor called" << std::endl;
 }
 
+FragTrap& FragTrap::operator=(const FragTrap& other)
+{
+	if (this != &other)
+	{
+		this->_hp = other._hp;
+		this->_energy = other._energy;
+		this->_ad = other._ad;
+	}
+	return (*this);
+}
+
 void FragTrap::highFiveGuys()
 {
 	std::cout << "Permission granted, you might high five your friends" << std::endl;

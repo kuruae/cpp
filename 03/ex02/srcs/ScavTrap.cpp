@@ -22,6 +22,17 @@ ScavTrap::~ScavTrap()
 	std::cout << "ScavTrap Destructor called" << std::endl;
 }
 
+ScavTrap& ScavTrap::operator=(const ScavTrap& other)
+{
+	if (this != &other)
+	{
+		this->_hp = other._hp;
+		this->_energy = other._energy;
+		this->_ad = other._ad;
+	}
+	return (*this);
+}
+
 void ScavTrap::guardGate()
 {
 	_isGuarding = !_isGuarding;
