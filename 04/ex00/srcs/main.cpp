@@ -1,7 +1,8 @@
 #include "setup.hpp"
 
-int main()
+int main(void)
 {
+
 	const Animal* meta = new Animal();
 	const Animal* j = new Dog();
 	const Animal* i = new Cat();
@@ -11,9 +12,17 @@ int main()
 	j->makeSound();
 	meta->makeSound();
 
+	const WrongAnimal* wrong_animal = new WrongAnimal();
+	const WrongAnimal* k = new WrongCat();
+
+	wrong_animal->makeSound();
+	k->makeSound();
+
 	delete meta;
 	delete j;
 	delete i;
+	delete wrong_animal;
+	delete k;
 
-	return 0;
+	return (0);
 }

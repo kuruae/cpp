@@ -5,3 +5,4 @@
 #include "Cat.hpp"
 #include "WrongCat.hpp"
 #include "Dog.hpp"
+#include "Brain.hpp"

@@ -15,7 +15,7 @@ public:
 
 	virtual void makeSound() const;
 	virtual str getType() const;	
-
+	virtual void readBrain() const;
 protected:
 	str _type;
 
