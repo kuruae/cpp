@@ -39,3 +39,16 @@ void Animal::readBrain() const
 {
 	std::cout << "This animal has no brain to read." << std::endl;
 }
+
+void Animal::setIdea(int const index, const str &idea)
+{
+	(void)index;
+	(void)idea;
+	std::cout << "This animal has no brain to set ideas." << std::endl;
+}
+
+str Animal::getIdea(int const index) const
+{
+	(void)index;
+	return ("This animal has no ideas.");
+}

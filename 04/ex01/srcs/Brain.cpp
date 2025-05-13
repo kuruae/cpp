@@ -30,3 +30,17 @@ void Brain::readBrain() const
 		std::cout << this->_ideas[i] << "\n";
 	std::cout << "wow so many ideas" << std::endl;
 }
+
+void Brain::setIdea(int const index, const str &idea)
+{
+	if (index >= 0 && index < 100)
+		this->_ideas[index] = idea;
+}
+
+str Brain::getIdea(int const index) const
+{
+	if (index >= 0 && index < 100)
+		return (this->_ideas[index]);
+	return (this->_ideas[0]);
+}
+

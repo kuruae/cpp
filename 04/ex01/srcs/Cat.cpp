@@ -1,4 +1,5 @@
 #include "Cat.hpp"
+#include "Brain.hpp"
 
 Cat::Cat() : Animal()
 {
@@ -39,8 +40,15 @@ void Cat::makeSound() const
 
 void Cat::readBrain() const
 {
-	if (this->_brain)
-		this->_brain->readBrain();
-	else
-		std::cout << "brainless cat...." << std::endl;
+	this->_brain->readBrain();
+}
+
+void Cat::setIdea(int const index, const str &idea)
+{
+	this->_brain->setIdea(index, idea);
+}
+
+str Cat::getIdea(int const index) const
+{
+	return this->_brain->getIdea(index);
 }

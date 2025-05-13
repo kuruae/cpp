@@ -1,4 +1,5 @@
 #include "Dog.hpp"
+#include "Brain.hpp"
 
 Dog::Dog() : Animal()
 {
@@ -29,4 +30,19 @@ Dog& Dog::operator=(const Dog& other)
 void Dog::makeSound() const
 {
 	std::cout << "Woof" << std::endl;
+}
+
+void Dog::readBrain() const
+{
+	this->_brain->readBrain();
+}
+
+void Dog::setIdea(int const index, const str &idea)
+{
+	this->_brain->setIdea(index, idea);
+}
+
+str Dog::getIdea(int const index) const
+{
+	return this->_brain->getIdea(index);
 }

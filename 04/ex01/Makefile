@@ -8,7 +8,7 @@ BOLD := \033[1m
 
 ########## FLAGS ##########
 CXX := c++
-CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -Wshadow -fsanitize=address -fsanitize=leak
+CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -Wshadow #-fsanitize=address -fsanitize=leak
 INCLUDES := -Iincludes
 
 ########## FILES ##########
