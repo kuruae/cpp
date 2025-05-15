@@ -4,10 +4,12 @@
 #include <string>
 
 typedef std::string str;
+#define MAX_INVETORY 4
 
-#include "AMateria.hpp"
-#include "IMateriaSource.hpp"
-#include "ICharacter.hpp"
-#include "Character.hpp"
-#include "Ice.hpp"
-#include "Cure.hpp"
+class AMateria;
+class ICharacter;
+class IMateriaSource;
+class Character;
+class Ice;
+class Cure;
+class MateriaSource;

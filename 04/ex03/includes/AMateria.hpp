@@ -8,14 +8,15 @@ public:
 	AMateria();
 	AMateria(str const& type);
 	AMateria(const AMateria& other);
-	~AMateria();
+	virtual ~AMateria();
 	
-	AMateria& operator=(const AMateria& other);
+	AMateria& 			operator=(const AMateria& other);
 
-	virtual AMateria* clone() const = 0;
-	virtual void use(ICharacter& target);
+	virtual AMateria*	clone() const = 0;
+	virtual void		use(ICharacter& target);
+	str const&			getType() const;
 
 protected:
-	str _type;
+	str 				_type;
 
 };

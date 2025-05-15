@@ -8,16 +8,26 @@ BOLD := \033[1m
 
 ########## FLAGS ##########
 CXX := c++
-CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -Wshadow -fsanitize=address -fsanitize=leak
+CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -Wshadow \
+		-fsanitize=address,leak,undefined \
+		-fno-omit-frame-pointer -g3 -O1
 INCLUDES := -Iincludes
 
 ########## FILES ##########
 SRC_DIR := srcs
 OBJ_DIR := objs
-SRC_FILES := $(SRC_DIR)/AMateria.cpp $(SRC_DIR)/main.cpp
+SRC_FILES := $(SRC_DIR)/AMateria.cpp \
+			$(SRC_DIR)/Character.cpp \
+			$(SRC_DIR)/Cure.cpp \
+			$(SRC_DIR)/Ice.cpp \
+			$(SRC_DIR)/MateriaSource.cpp \
+			$(SRC_DIR)/main.cpp \
+			$(SRC_DIR)/AMateria.cpp \
+			$(SRC_DIR)/MateriaSource.cpp \
+			$(SRC_DIR)/Character.cpp
 
 OBJ_FILES := $(SRC_FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
-NAME := animal
+NAME := Materias
 
 ########## RULES ##########
 all: $(NAME)
