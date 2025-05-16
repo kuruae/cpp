@@ -61,14 +61,19 @@ void testMateriaSource() {
     std::cout << "Attempting to learn a 5th Materia (should fail silently)..." << std::endl;
     src->learnMateria(new Ice()); // Should do nothing as inventory is full
     
+    // Create a Character to manage created Materias
+    Character* manager = new Character("Manager");
+    
     // Test creating Materias
     std::cout << "\nTesting createMateria():" << std::endl;
     
     // Create known Materias
     AMateria* ice = src->createMateria("ice");
+    manager->equip(ice);
     std::cout << "Created Materia type: " << ice->getType() << std::endl;
     
     AMateria* cure = src->createMateria("cure");
+    manager->equip(cure);
     std::cout << "Created Materia type: " << cure->getType() << std::endl;
     
     // Test creating an unknown Materia (should return NULL)
@@ -80,8 +85,7 @@ void testMateriaSource() {
         std::cout << "Correctly returned NULL for unknown Materia type." << std::endl;
     
     // Clean up
-    delete ice;
-    delete cure;
+    delete manager;  // This will clean up all created Materias
     delete src;
 }
 
@@ -97,54 +101,44 @@ void testCharacterEquipUnequip() {
     std::cout << "Creating Character 'hero'..." << std::endl;
     Character* hero = new Character("hero");
     
-    // Create Materias for equipping
-    AMateria* materias[6]; // 6 Materias (more than the inventory can hold)
-    std::cout << "\nCreating Materias for equipping:" << std::endl;
-    for (int i = 0; i < 6; i++) {
-        if (i % 2 == 0) {
-            materias[i] = src->createMateria("ice");
-            std::cout << "Created Ice Materia #" << i << std::endl;
-        } else {
-            materias[i] = src->createMateria("cure");
-            std::cout << "Created Cure Materia #" << i << std::endl;
-        }
-    }
-    
     // Test equipping Materias
     std::cout << "\nTesting equip():" << std::endl;
     std::cout << "Equipping 4 Materias (should all succeed)..." << std::endl;
+    
     for (int i = 0; i < 4; i++) {
-        hero->equip(materias[i]);
-        std::cout << "Equipped " << materias[i]->getType() << " at slot " << i << std::endl;
+        if (i % 2 == 0) {
+            hero->equip(src->createMateria("ice"));
+            std::cout << "Equipped ice at slot " << i << std::endl;
+        } else {
+            hero->equip(src->createMateria("cure"));
+            std::cout << "Equipped cure at slot " << i << std::endl;
+        }
     }
     
     // Test equipping when inventory is full
     std::cout << "\nAttempting to equip when inventory is full (should fail silently):" << std::endl;
-    hero->equip(materias[4]);
+    AMateria* extra = src->createMateria("ice");
+    hero->equip(extra);
+    // Don't delete extra, it's now managed by the floor list in Character
     std::cout << "Equip attempt completed (should have done nothing)." << std::endl;
     
     // Test unequipping
     std::cout << "\nTesting unequip():" << std::endl;
     std::cout << "Unequipping slot 2..." << std::endl;
-    hero->unequip(2);
+    hero->unequip(2); // Materia goes to floor list
     
     // Should be able to equip in the now-empty slot
     std::cout << "\nEquipping new Materia in the freed slot..." << std::endl;
-    hero->equip(materias[4]);
-    std::cout << "Equipped " << materias[4]->getType() << " in freed slot" << std::endl;
+    hero->equip(src->createMateria("ice"));
+    std::cout << "Equipped ice in freed slot" << std::endl;
     
     // Test unequipping an invalid slot (should not crash)
     std::cout << "\nAttempting to unequip invalid slot 10 (should fail silently):" << std::endl;
     hero->unequip(10);
     std::cout << "Unequip attempt completed (should have done nothing)." << std::endl;
     
-    // Need to save the unequipped Materia to delete it later
-    AMateria* unequipped = materias[2];
-    
-    // Clean up (including the unequipped Materia)
-    delete unequipped;
-    delete materias[5]; // This one was never equipped
-    delete hero;
+    // Clean up
+    delete hero; // Character destructor will handle all Materias (equipped and on floor)
     delete src;
 }
 
@@ -160,10 +154,9 @@ void testCharacterCopy() {
     std::cout << "Creating and equipping original Character 'original'..." << std::endl;
     Character* original = new Character("original");
     
-    AMateria* ice1 = src->createMateria("ice");
-    AMateria* cure1 = src->createMateria("cure");
-    original->equip(ice1);
-    original->equip(cure1);
+    // Create and equip Materias directly
+    original->equip(src->createMateria("ice"));
+    original->equip(src->createMateria("cure"));
     
     // Test copy constructor
     std::cout << "\nTesting copy constructor:" << std::endl;
@@ -191,16 +184,14 @@ void testCharacterCopy() {
     // Modify original to prove deep copy
     std::cout << "\nModifying original to prove deep copy:" << std::endl;
     original->unequip(0);
-    AMateria* newMateria = src->createMateria("cure");
-    original->equip(newMateria);
+    original->equip(src->createMateria("cure"));
     
     std::cout << "Original after modification (slot 0 should now be cure):" << std::endl;
     original->use(0, *target);
     std::cout << "Copy1 after original was modified (slot 0 should still be ice):" << std::endl;
     copy1->use(0, *target);
     
-    // Clean up
-    delete ice1; // We unequipped this one
+    // Clean up (let the Character destructors handle the Materias)
     delete target;
     delete original;
     delete copy1;
@@ -211,11 +202,18 @@ void testCharacterCopy() {
 void testMateriaUse() {
     std::cout << "\n===== MATERIA USE TEST =====\n" << std::endl;
     
+    // Create a Character to manage the Materias
+    Character* manager = new Character("Manager");
+    
     // Create Materias directly
     AMateria* ice = new Ice();
     AMateria* cure = new Cure();
     
-    // Create Characters
+    // Equip them to be managed
+    manager->equip(ice);
+    manager->equip(cure);
+    
+    // Create Characters for testing
     ICharacter* cloud = new Character("Cloud");
     ICharacter* tifa = new Character("Tifa");
     
@@ -229,25 +227,24 @@ void testMateriaUse() {
     // Test cloning
     std::cout << "\nTesting clone() for Ice Materia:" << std::endl;
     AMateria* iceClone = ice->clone();
+    manager->equip(iceClone);  // Equip clone to be managed
     std::cout << "Cloned Materia type: " << iceClone->getType() << std::endl;
     
     std::cout << "\nTesting clone() for Cure Materia:" << std::endl;
     AMateria* cureClone = cure->clone();
+    manager->equip(cureClone);  // Equip clone to be managed
     std::cout << "Cloned Materia type: " << cureClone->getType() << std::endl;
     
     // Clean up
-    delete ice;
-    delete cure;
-    delete iceClone;
-    delete cureClone;
     delete cloud;
     delete tifa;
+    delete manager;  // This will clean up all Materias
 }
 
 void testMemoryLeaks() {
     std::cout << "\n===== MEMORY LEAK TEST =====\n" << std::endl;
     std::cout << "This test ensures proper destruction of all objects." << std::endl;
-    std::cout << "Check for memory leaks using valgrind or similar tools." << std::endl;
+    std::cout << "Check for memory leaks using valgrind or sanitizer tools." << std::endl;
     
     // Create a complex scenario with multiple objects
     IMateriaSource* src = new MateriaSource();
@@ -287,7 +284,6 @@ void testMemoryLeaks() {
     heroCopy->use(2, *ally);
     
     // Clean up everything
-    delete materias[1]; // The unequipped Materia
     delete heroCopy;
     delete ally;
     delete enemy;
