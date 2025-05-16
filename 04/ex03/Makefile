@@ -8,7 +8,8 @@ BOLD := \033[1m
 
 ########## FLAGS ##########
 CXX := c++
-CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -Wshadow \
+CXXFLAGS := -Wall -Wextra -Werror -std=c++98 \
+		-MMD -MP -Wshadow \
 		-fsanitize=address,leak,undefined \
 		-fno-omit-frame-pointer -g3 -O1
 INCLUDES := -Iincludes
@@ -52,3 +53,5 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
+
+-include $(OBJ_FILES:.o=.d)

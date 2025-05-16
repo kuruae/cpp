@@ -22,7 +22,7 @@ public:
     Character();
     Character(str const& name);
     Character(const Character& other);
-    virtual ~Character();
+    ~Character();
 
     Character&      operator=(const Character& other);
 

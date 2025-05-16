@@ -7,7 +7,7 @@ class MateriaSource : public IMateriaSource
 public:
 	MateriaSource();
 	MateriaSource(const MateriaSource& other);
-	virtual ~MateriaSource();
+	~MateriaSource();
 
 	MateriaSource&	operator=(const MateriaSource& other);
 
