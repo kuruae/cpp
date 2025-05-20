@@ -66,6 +66,8 @@ void Bureaucrat::decrementGrade()
 	this->_grade++;
 }
 
+bool Bureaucrat::signForm(const Form& form) const;
+
 Bureaucrat::GradeTooLowException::GradeTooLowException() :
 std::runtime_error("Grade too low") {}
 

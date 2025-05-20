@@ -21,7 +21,11 @@ public:
 	int		getExecGrade() const;
 	bool	getSignedState() const;
 
+	void	beSigned(const Bureaucrat* bureaucrat) const;
+
 private:
+	void	signForm(int grade) const;
+
 	const str	_name;
 	const int	_requieredSignGrade;
 	const int	_requieredExecGrade;

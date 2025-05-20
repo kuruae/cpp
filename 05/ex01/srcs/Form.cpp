@@ -31,7 +31,6 @@ Form&	Form::operator=(const Form& other)
 		this->_isSigned = other._isSigned;
 }
 
-
 // == getters ========
 str		Form::getName() const
 {
@@ -53,6 +52,7 @@ bool	Form::getSignedState() const
 	return (this->_isSigned);
 }
 // ===================
+
 
 
 std::ostream&	operator<<(std::ostream& os, const Form& other)

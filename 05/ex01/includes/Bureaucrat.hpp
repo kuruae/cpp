@@ -4,6 +4,8 @@
 #include <string>
 #include <exception>	
 
+#include "Form.hpp"
+
 #define MIN_GRADE 150
 #define MAX_GRADE 1
 
@@ -20,13 +22,15 @@ public:
 	Bureaucrat& operator=(const Bureaucrat& other);
 
 	str		getName() const;
-	int	getGrade() const;
+	int		getGrade() const;
 
 	void	incrementGrade(int nbr);
 	void	incrementGrade();
 
 	void	decrementGrade(int nbr);
 	void	decrementGrade();
+
+	bool	signForm(const Form& form) const;
 
 	class GradeTooLowException : public std::runtime_error{
 		public:
