@@ -42,3 +42,5 @@ private:
 	str	_name;
 	int	_grade;
 };
+
+std::ostream&	operator<<(std::ostream& os, Bureaucrat const& bur);

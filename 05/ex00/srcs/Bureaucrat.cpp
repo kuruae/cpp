@@ -71,3 +71,9 @@ std::runtime_error("Grade too low") {}
 
 Bureaucrat::GradeTooHighException::GradeTooHighException() :
 std::runtime_error("Grade too high") {}
+
+std::ostream&	operator<<(std::ostream& os, Bureaucrat const& bur)
+{
+	os << bur.getName() << ", bureaucrat grade " << bur.getGrade() << "." << std::endl;
+	return (os);
+}

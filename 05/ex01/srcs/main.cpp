@@ -1,71 +1,112 @@
 #include "Bureaucrat.hpp"
+#include "Form.hpp"
+
+#include "Bureaucrat.hpp"
+#include "Form.hpp"
 
 int main()
 {
-	Bureaucrat obj1("obj1", 150);
-
-	std::cout << obj1.getName() << "'s grade is " << obj1.getGrade() << std::endl; 
-
-
-	std::cout << "==== TEST 1 ====" << std::endl;
+	std::cout << "==== FORM CREATION TESTS ====" << std::endl;
 	
-	try{
-		Bureaucrat obj2("obj2", 170);
+	try {
+		Form form1("Tax Form", 50, 25);
+		std::cout << form1 << std::endl;
 	}
-	catch (std::exception &e){
-		std::cout << e.what() << "\n" << std::endl;
+	catch (std::exception &e) {
+		std::cout << "Error: " << e.what() << std::endl;
 	}
 
-	std::cout << "==== TEST 2 ====" << std::endl;
+	std::cout << "\n==== INVALID FORM GRADE TESTS ====" << std::endl;
 	
-	try{
-		Bureaucrat obj3("obj3", -12);
+	try {
+		Form form2("Invalid High Sign", 0, 25);  // Should throw GradeTooHighException
 	}
-	catch (std::exception &e){
-		std::cout << e.what() << "\n" << std::endl;
+	catch (std::exception &e) {
+		std::cout << "Sign grade too high: " << e.what() << std::endl;
 	}
 
-	std::cout << "==== TEST 3 ====" << std::endl;
+	try {
+		Form form3("Invalid Low Exec", 50, 151);  // Should throw GradeTooLowException
+	}
+	catch (std::exception &e) {
+		std::cout << "Exec grade too low: " << e.what() << std::endl;
+	}
+
+	std::cout << "\n==== BUREAUCRAT AND FORM INTERACTION ====" << std::endl;
 	
-	try{
-		Bureaucrat obj4("obj4", 12);
-	}
-	catch (std::exception &e){
-		std::cout << e.what() << "\n" << std::endl; // <-- not reached
-	}
+	// Create valid bureaucrats and forms
+	Bureaucrat alice("Alice", 30);
+	Bureaucrat bob("Bob", 75);
+	Form importantForm("Important Document", 50, 25);
+	Form secretForm("Secret Document", 10, 5);
 
-	std::cout << "==== TEST 4 ====" << std::endl;
+	std::cout << alice << std::endl;
+	std::cout << bob << std::endl;
+	std::cout << importantForm << std::endl;
+	std::cout << secretForm << std::endl;
+
+	std::cout << "\n==== SUCCESSFUL SIGNING TEST ====" << std::endl;
 	
-	try{
-		Bureaucrat obj5("obj5", 5);
+	// Alice (grade 30) should be able to sign importantForm (requires grade 50)
+	alice.signForm(importantForm);
+	std::cout << "After signing: " << importantForm << std::endl;
 
-		for (int i = 0; i < 7; i++)
-		{
-			std::cout << "current grade: " << obj5.getGrade() << std::endl;
-			obj5.incrementGrade();
-		}
-	}
-	catch (std::exception &e){
-		std::cout << e.what() << "\n" << std::endl;
-	}
-
-	std::cout << "==== TEST 5 ====" << std::endl;
+	std::cout << "\n==== FAILED SIGNING TEST ====" << std::endl;
 	
-	try{
-		Bureaucrat obj6("obj6", 100);
+	// Bob (grade 75) should NOT be able to sign importantForm (requires grade 50)
+	bob.signForm(importantForm);
 
-		std::cout	<< "current grade: " << obj6.getGrade() 
-					<< "\nnow trying to decrement from 70 grades..." << std::endl;
-
-		obj6.decrementGrade(70);
-
-		std::cout	<< "success!" << std::endl; // <-- not reached 
-	}
-	catch (std::exception &e){
-		std::cout << e.what() << "\n" << std::endl;
-	}
-
+	std::cout << "\n==== ALREADY SIGNED FORM TEST ====" << std::endl;
 	
+	// Try to sign an already signed form
+	alice.signForm(importantForm);
+
+	std::cout << "\n==== HIGH-LEVEL FORM TEST ====" << std::endl;
+	
+	// Both should fail to sign the secret form (requires grade 10)
+	alice.signForm(secretForm);
+	bob.signForm(secretForm);
+
+	std::cout << "\n==== CREATING HIGH-LEVEL BUREAUCRAT ====" << std::endl;
+	
+	try {
+		Bureaucrat president("President", 1);
+		std::cout << president << std::endl;
+		
+		// President should be able to sign any form
+		president.signForm(secretForm);
+		std::cout << "After president signing: " << secretForm << std::endl;
+	}
+	catch (std::exception &e) {
+		std::cout << "Error creating president: " << e.what() << std::endl;
+	}
+
+	std::cout << "\n==== FORM beSigned() DIRECT TEST ====" << std::endl;
+	
+	try {
+		Form directTest("Direct Test", 100, 50);
+		Bureaucrat testBureaucrat("Tester", 80);
+		
+		std::cout << "Before beSigned: " << directTest << std::endl;
+		directTest.beSigned(testBureaucrat);  // Should work (80 < 100)
+		std::cout << "After beSigned: " << directTest << std::endl;
+	}
+	catch (std::exception &e) {
+		std::cout << "Direct beSigned error: " << e.what() << std::endl;
+	}
+
+	std::cout << "\n==== FORM beSigned() FAILURE TEST ====" << std::endl;
+	
+	try {
+		Form strictForm("Strict Form", 20, 10);
+		Bureaucrat lowGradeBureaucrat("Low Grade", 50);
+		
+		std::cout << "Before failed beSigned: " << strictForm << std::endl;
+		strictForm.beSigned(lowGradeBureaucrat);  // Should fail (50 > 20)
+	}
+	catch (std::exception &e) {
+		std::cout << "Expected failure: " << e.what() << std::endl;
+	}
 
 	return 0;
 }

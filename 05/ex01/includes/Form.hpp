@@ -4,6 +4,8 @@
 #include <string>
 #include <exception>	
 
+class Bureaucrat;
+
 typedef std::string str;
 
 class Form
@@ -21,11 +23,14 @@ public:
 	int		getExecGrade() const;
 	bool	getSignedState() const;
 
-	void	beSigned(const Bureaucrat* bureaucrat) const;
+	void	beSigned(const Bureaucrat& bureaucrat);
+
+	class AlreadySignedException : public std::runtime_error{
+		public:
+			AlreadySignedException();
+	};
 
 private:
-	void	signForm(int grade) const;
-
 	const str	_name;
 	const int	_requieredSignGrade;
 	const int	_requieredExecGrade;

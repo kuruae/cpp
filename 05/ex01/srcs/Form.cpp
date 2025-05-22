@@ -29,6 +29,7 @@ Form&	Form::operator=(const Form& other)
 {
 	if (this != &other)
 		this->_isSigned = other._isSigned;
+	return (*this);
 }
 
 // == getters ========
@@ -54,12 +55,24 @@ bool	Form::getSignedState() const
 // ===================
 
 
+void	Form::beSigned(const Bureaucrat& bureaucrat)
+{
+	if (bureaucrat.getGrade() > this->_requieredSignGrade)
+		throw Bureaucrat::GradeTooLowException();
+	if (this->_isSigned)
+		throw Form::AlreadySignedException();
+	this->_isSigned = true;
+}
+
+Form::AlreadySignedException::AlreadySignedException() :
+	std::runtime_error("Form is already signed") {}
 
 std::ostream&	operator<<(std::ostream& os, const Form& other)
 {
-	std::cout	<< "Name: " << other.getName() << "\n"
-				<< "Requiered grade to sign: " << other.getSignGrade() << "\n"
-				<< "Requiered grade to execute: " << other.getExecGrade() << "\n"
-				<< "Is this form signed: " << (other.getSignedState() ? "Yes" : "No")
-				<< std::endl;
+	os	<< "Name: " << other.getName() << "\n"
+		<< "Requiered grade to sign: " << other.getSignGrade() << "\n"
+		<< "Requiered grade to execute: " << other.getExecGrade() << "\n"
+		<< "Is this form signed: " << (other.getSignedState() ? "Yes" : "No")
+		<< std::endl;
+	return (os);
 }

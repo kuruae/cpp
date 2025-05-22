@@ -22,7 +22,7 @@ SRC_FILES := $(SRC_DIR)/main.cpp \
 			$(SRC_DIR)/Form.cpp
 
 OBJ_FILES := $(SRC_FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
-NAME := Bureau
+NAME := Form
 
 ########## RULES ##########
 all: $(NAME)
