@@ -3,4 +3,5 @@
 *.obj
 *.a
 *.out
+*.d
 .DS_Store
