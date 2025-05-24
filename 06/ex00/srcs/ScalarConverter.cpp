@@ -1,5 +1,6 @@
 #include "ScalarConverter.hpp"
 
+/* useless constructors ***********************************************************/
 ScalarConverter::ScalarConverter() {}
 
 ScalarConverter::ScalarConverter(const ScalarConverter& other) { (void)other; }
@@ -11,6 +12,7 @@ ScalarConverter& ScalarConverter::operator=(const ScalarConverter& other)
 	(void)other;
 	return *this;
 }
+/*********************************************************************************/
 
 static void printImpossible(const std::string& type = "all")
 {
@@ -46,7 +48,7 @@ static void printInt(int i)
 
 static void printFloat(float f)
 {
-	if (f < std::numeric_limits<float>::min() || f > std::numeric_limits<float>::max())
+	if (f < -std::numeric_limits<float>::max() || f > std::numeric_limits<float>::max())
 		std::cout << "float: impossible" << std::endl;
 	else
 	{
@@ -57,7 +59,7 @@ static void printFloat(float f)
 
 static void printDouble(double d)
 {
-	if (d < std::numeric_limits<double>::min() || d > std::numeric_limits<double>::max())
+	if (d < -std::numeric_limits<double>::max() || d > std::numeric_limits<double>::max())
 		std::cout << "double: impossible" << std::endl;
 	else
 	{
@@ -106,7 +108,7 @@ static void convertFromDouble(const std::string& str)
 	else
 		printInt(static_cast<int>(d));
 
-	if (d < std::numeric_limits<float>::min() || d > std::numeric_limits<float>::max())
+	if (d < -std::numeric_limits<float>::max() || d > std::numeric_limits<float>::max())
 		printImpossible("float");
 	else
 		printFloat(static_cast<float>(d));
