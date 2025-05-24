@@ -18,7 +18,9 @@ INCLUDES := -Iincludes
 SRC_DIR := srcs
 OBJ_DIR := objs
 SRC_FILES := $(SRC_DIR)/main.cpp \
-			$(SRC_DIR)/ScalarConverter.cpp
+			$(SRC_DIR)/ScalarConverter.cpp \
+			$(SRC_DIR)/convertPrinters.cpp \
+			$(SRC_DIR)/convertUtils.cpp
 
 OBJ_FILES := $(SRC_FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 NAME := Convert
@@ -43,8 +45,47 @@ fclean: clean
 	@rm -f $(NAME)
 	@printf "$(RED)[x] Executable $(NAME) removed.$(RESET)\n"
 
+test: $(NAME)
+	@printf "$(YELLOW)$(BOLD)Running tests...$(RESET)\n"
+	
+	@printf "$(YELLOW)\ninput: 42$(RESET)\n"
+	@./$(NAME) 42
+	
+	@printf "$(YELLOW)\ninput: 42.0$(RESET)\n"
+	@./$(NAME) 42.0
+	
+	@printf "$(YELLOW)\ninput: 42.0f$(RESET)\n"
+	@./$(NAME) '42.0f'
+	
+	@printf "$(YELLOW)\ninput: 42.f$(RESET)\n"
+	@./$(NAME) '42.f'
+	
+	@printf "$(YELLOW)\ninput: .42$(RESET)\n"
+	@./$(NAME) '.42'
+	
+	@printf "$(YELLOW)\ninput: 0.0$(RESET)\n"
+	@./$(NAME) '0.0'
+
+	@printf "$(YELLOW)\ninput: -3.222222222222222222$(RESET)\n"
+	@./$(NAME) '-3.222222222222222222'
+
+	@printf "$(YELLOW)\ninput: nan$(RESET)\n"
+	@./$(NAME) 'nan'
+	
+	@printf "$(YELLOW)\ninput: +inf$(RESET)\n"
+	@./$(NAME) '+inf'
+
+	@printf "$(YELLOW)\ninput: -inff$(RESET)\n"
+	@./$(NAME) '-inff'
+
+	@printf "$(YELLOW)\ninput: w$(RESET)\n"
+	@./$(NAME) 'w'
+
+	@printf "$(YELLOW)\ninput: hello world$(RESET)\n"
+	@./$(NAME) "hello world"
+
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean test re
 
 -include $(OBJ_FILES:.o=.d)
