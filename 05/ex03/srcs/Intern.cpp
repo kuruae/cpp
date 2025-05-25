@@ -39,7 +39,7 @@ AForm* Intern::makeForm(const str& formName, const str& target) const
 		&Intern::createPresidentialPardonForm
 	};
 
-	for (size_t i = 0; i < (sizeof(formNames) / sizeof(formNames[0])); ++i)
+	for (size_t i = 0; i < ARRAYSIZE(formNames); ++i)
 	{
 		if (formName == formNames[i])
 		{
