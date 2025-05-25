@@ -4,7 +4,7 @@ bool isSpecialCase(const std::string& str)
 {
 	return (str == "nan" || str == "-inf" || str == "+inf" ||
 			str == "-inff" || str == "+inff" || str == "nanf" ||
-			str == "inf" || str == "inff");
+			str == "inf" || str == "inff" || str.empty());
 } 
 
 bool isCharLiteral(const std::string& str)

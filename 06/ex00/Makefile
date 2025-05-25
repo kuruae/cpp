@@ -69,6 +69,15 @@ test: $(NAME)
 	@printf "$(YELLOW)\ninput: -3.222222222222222222$(RESET)\n"
 	@./$(NAME) '-3.222222222222222222'
 
+	@printf "$(YELLOW)\ninput: 2147483647 (INT_MAX)$(RESET)\n"
+	@./$(NAME) '2147483647'
+
+	@printf "$(YELLOW)\ninput: -2147483648 (INT_MIN)$(RESET)\n"
+	@./$(NAME) '-2147483648'
+
+	@printf "$(YELLOW)\ninput: 9999999999 (overflow)$(RESET)\n"
+	@./$(NAME) '9999999999'
+
 	@printf "$(YELLOW)\ninput: nan$(RESET)\n"
 	@./$(NAME) 'nan'
 	
@@ -83,6 +92,8 @@ test: $(NAME)
 
 	@printf "$(YELLOW)\ninput: hello world$(RESET)\n"
 	@./$(NAME) "hello world"
+
+	@printf "$(GREEN)$(BOLD)[✓] Tests completed!$(RESET)\n"
 
 re: fclean all
 

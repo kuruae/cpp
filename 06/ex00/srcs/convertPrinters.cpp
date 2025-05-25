@@ -38,6 +38,8 @@ void printSpecialCase(const std::string& str)
 		std::cout << "float: +inff" << std::endl;
 		std::cout << "double: +inf" << std::endl;
 	}
+	else if (str.empty())
+		printImpossible();
 	else
 		std::cerr << "Unknown special case: " << str << std::endl;
 }
