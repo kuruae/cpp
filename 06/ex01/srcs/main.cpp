@@ -1,24 +1,48 @@
-#include "ScalarConverter.hpp"
+#include "Serializer.hpp"
 
-ScalarConverter u;
-
-int main(int argc, char **argv)
+int	main(void)
 {
-	if (argc != 2)
-	{
-		std::cerr << "Usage: ./ScalarConverter <value>" << std::endl;
-		return 1;
+
+	std::cout << "==== Serializer Test ====" << "\n"
+			  << "testing with a Data pointer,"
+			  << "containing the string \"Test Data\" "
+			  << "and the integer value 42\n" << std::endl;
+
+
+	Data *data = new Data();
+	uintptr_t ptr;
+
+	data->name = "Test Data";
+	data->value = 42;
+	try {
+		ptr = Serializer::serialize(data);
+		Data *tmp = Serializer::deserialize(ptr);
+
+		std::cout	<< "Data ptr: " << data << " -> name: " << data->name
+					<< ", integer value: " << data->value << std::endl;
+		
+		std::cout << "Serialized ptr(type = uintptr_t): " << ptr << std::endl;
+		
+		if (tmp)
+			std::cout	<< "Deserialized ptr(type = Data): " << tmp << " -> name: "
+						<< tmp->name << ", integer value: " << tmp->value << std::endl;
+		else
+			std::cout << "Deserialized ptr is NULL" << std::endl;
+			
+	} catch (std::exception &e) {
+		std::cout << e.what() << std::endl;
+	}
+
+
+	std::cout << "\n==== Null Pointer Test ====" << std::endl;
+
+	Data *nullData = 0;
+	try {
+		ptr = Serializer::serialize(nullData);
+	} catch (std::exception &e) {
+		std::cout << e.what() << std::endl;
 	}
 	
-	try
-	{
-		ScalarConverter::convert(argv[1]);
-	}
-	catch (const std::exception& e)
-	{
-		std::cerr << "Error: " << e.what() << std::endl;
-		return 1;
-	}
-	
-	return 0;
-}	
+	delete data;
+	return (0);
+}

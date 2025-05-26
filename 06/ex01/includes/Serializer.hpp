@@ -4,22 +4,29 @@
 #include <iomanip>
 #include <string>
 #include <limits>
+#include <stdint.h>
 
 typedef struct Data
 {
-	int		value;
-	int		otherValue;
+	std::string	name;
+	int			value;
 } Data;
 
 class Serializer
 {
 public:
-	static uintptr_t serialize(Data* ptr);
-	static Data* deserialize(uintptr_t raw);
-	virtual ~Serializer();
+	static uintptr_t	serialize(Data* ptr);
+	static Data*		deserialize(uintptr_t raw);
+
+	class NullPointerException : std::runtime_error
+	{
+	public:
+		NullPointerException();
+	};
 
 private:
-	Serializer(); // Prevent instantiation
-	Serializer(const Serializer& other); // Prevent copying
-	Serializer& operator=(const Serializer& other); // Prevent assignment
+	Serializer();
+	Serializer(const Serializer& other);
+	Serializer& operator=(const Serializer& other);
+	~Serializer();
 };
