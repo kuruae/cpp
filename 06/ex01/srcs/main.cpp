@@ -1,5 +1,7 @@
 #include "ScalarConverter.hpp"
 
+ScalarConverter u;
+
 int main(int argc, char **argv)
 {
 	if (argc != 2)
@@ -7,8 +9,7 @@ int main(int argc, char **argv)
 		std::cerr << "Usage: ./ScalarConverter <value>" << std::endl;
 		return 1;
 	}
-
-
+	
 	try
 	{
 		ScalarConverter::convert(argv[1]);
