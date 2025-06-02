@@ -91,12 +91,13 @@ int main()
 
 		std::cout << GREEN<< "\n- Testing iterators -" <<RESET<< std::endl;
 
+		/* 
 		MutantStack<float, std::vector<float> > newMStack = MStackFloat;
-
+		std::cout	<< "making a copy of MStackFloat..\n\n";
+		 */
 		MutantStack<float, std::vector<float> >::iterator it = MStackFloat.begin();
-
-		std::cout	<< "making a copy of MStackFloat..\n\n"
-					<< "printing the entire stack with iterators,"
+		
+		std::cout	<< "printing the entire stack with iterators,"
 					<< " then changing there value through dereferencing:" << std::endl;
 		
 		while(it != MStackFloat.end())
@@ -108,13 +109,15 @@ int main()
 		}
 
 		std::cout << "MStackFloat top() value: " << MStackFloat.top() << std::endl;
+		/*
 		std::cout << "Backup copy top() value: " << newMStack.top() << std::endl;
 		
 		std::cout << "\nnow after running stack member method swap()...\n" << std::endl;
 		MStackFloat.swap(newMStack);
-
+		
 		std::cout << "MStackFloat top() value: " << MStackFloat.top() << std::endl;
 		std::cout << "Backup copy top() value: " << newMStack.top() << std::endl;
+		*/
 		
 
 

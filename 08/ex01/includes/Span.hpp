@@ -4,8 +4,9 @@
 #include <algorithm>
 #include <stdexcept>
 #include <vector>
-#include <cstdint>
 #include <exception>
+#include <limits>
+
 
 template <typename T, size_t N>
 size_t arraySize(T(&) [N])
@@ -18,7 +19,7 @@ class Span
 {
 public:
 	Span();
-	Span(uint32_t maxsize);
+	Span(unsigned int maxsize);
 	Span(const Span& other);
 	~Span();
 
@@ -39,7 +40,7 @@ public:
 
 
 private:
-	uint32_t			_maxsize;
+	unsigned int			_maxsize;
 	std::vector<int>	_vector;
 
 };

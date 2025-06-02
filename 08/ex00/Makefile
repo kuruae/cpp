@@ -9,7 +9,7 @@ BOLD := \033[1m
 ########## FLAGS ##########
 CXX := c++
 CXXFLAGS := -Wall -Wextra -Werror -std=c++98 \
-		-MMD -MP -Wshadow #\
+		-MMD -MP -Wshadow \
 		-fsanitize=address,leak,undefined \
 		-fno-omit-frame-pointer -g3 -O1
 INCLUDES := -Iincludes

@@ -2,7 +2,7 @@
 
 Span::Span() : _maxsize(0) {}
 
-Span::Span(uint32_t maxsize) : _maxsize(maxsize) {}
+Span::Span(unsigned int maxsize) : _maxsize(maxsize) {}
 
 Span::Span(const Span& other) : _maxsize(other._maxsize), _vector(other._vector) {}
 
