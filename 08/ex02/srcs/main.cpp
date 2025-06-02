@@ -61,6 +61,8 @@ int main()
 
 		std::cout << "printing top element: " << floatingStack.top() << std::endl;
 
+		std::cout << "size of the stack: " << floatingStack.size() << std::endl;
+
 		//================
 
 		std::cout << GREEN << "\n\n" << 
@@ -80,6 +82,8 @@ int main()
 		MStackFloat.pop();
 
 		std::cout << "printing top element: " << MStackFloat.top() << std::endl;
+
+		std::cout << "size of the stack: " << MStackFloat.size() << std::endl;
 
 
 		//==============
