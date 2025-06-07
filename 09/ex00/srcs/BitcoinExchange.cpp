@@ -13,113 +13,69 @@ BitcoinExchange& BitcoinExchange::operator=(const BitcoinExchange& other)
 	return *this;
 }
 
+/************************************************************************************************/
+
+
+void	BitcoinExchange::printMatchedValue()
+{
+	std::map<Date, double>::iterator it = _btc.upper_bound(_date);
+	
+	if (it != _btc.begin()){
+		it--;
+	}
+	
+	std::cout << _date << " => " << _value << " = " << (it->second * _value) << std::endl;
+}
+
+void	BitcoinExchange::validateDate()
+{
+	if (_date.year < 1 || _date.month < 1 || _date.month > 12 || _date.day < 1 || _date.day > 31)
+	throw std::runtime_error("Invalid date");
+	
+	if (_date.day > daysInMonth(_date))
+	throw std::runtime_error("Invalid day for the month");
+	
+	if (_date.year < 2009 || (_date.year == 2009 && _date.month < 1)
+	|| (_date.year == 2009 && _date.month == 1 && _date.day < 2))
+	throw std::runtime_error("Date is before the start of Bitcoin data (2009-01-02)");
+}
+
 void	BitcoinExchange::parseDate(const string_t& line)
 {
-	size_t pos = line.find('|');
-	if (pos == string_t::npos)
-		std::cerr << RED << "Error: Invalid line format, missing '|': " << line << RESET << std::endl;
+	size_t pos = findSeparator(line, '|');
 
 	string_t dateStr = line.substr(0, pos);
 	string_t valueStr = line.substr(pos + 1);
 
-	// parse date
-	int matches = std::sscanf(dateStr.c_str(), "%d-%d-%d"
-					, &_date.year, &_date.month, &_date.day);
+	dateStr = trim(dateStr);
+	valueStr = trim(valueStr);
+
+	char extra;
+	int matches = std::sscanf(dateStr.c_str(), "%d-%d-%d%c"
+					, &_date.year, &_date.month, &_date.day, &extra);
 	if (matches != 3)
-	{
-		std::cerr << RED << "Error: Invalid date format: " << dateStr << RESET << std::endl;
-		return;
-	}
+		throw std::runtime_error("Garbage values after date");
 
-	// if (_date.year < 2009 || _date.month < 1 || _date.month > 12 || _date.day < 1 || _date.day > 31)
-	// 	throw std::runtime_error("Invalid date: " + dateStr);
-
-	// parse value
-	_value = atof(valueStr.c_str());
+	_value = convertToDoubleOrThrow(valueStr);
 
 	if (_value < 0)
-		std::cerr << RED << "Error: Negative value: " << _value << RESET << std::endl;
+		throw std::out_of_range("Negative value");
 	else if (_value > MAX_VALUE)
-		std::cerr << RED << "Error: Value exceeds 1000: " << _value << RESET << std::endl;
-	else
-	std::cout << "Parsed Date: " << _date.year << "-" << _date.month << "-" << _date.day
-			  << ", Value: " << _value << std::endl;
-
-}
-
-static bool isLeapYear(int year)
-{
-	return (year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0));
-}
-
-int BitcoinExchange::daysInMonth()
-{
-	static const int days[] = { 31, 28, 31, 30,
-										31, 30, 31, 31,
-										30, 31, 30, 31 };
-
-	if (_date.month == 2 && isLeapYear(_date.year))
-		return 29;
-
-	else if (_date.month < 1 || _date.month > 12)
-		return 0;
-
-	else
-		return days[_date.month - 1];
-}
-
-bool	BitcoinExchange::validateDate()
-{
-	if (_date.year < 1 || _date.month < 1 || _date.month > 12 || _date.day < 1 || _date.day > 31)
-	{
-		std::cerr << RED << "Error: Invalid date: " << _date.year << "-" << _date.month << "-" << _date.day << RESET << std::endl;
-		return false;
-	}
-	daysInMonth();
-	return true;
-}
-
-void	BitcoinExchange::printMatchedValue()
-{
-	std::map<Date, double>::iterator it = _btc.lower_bound(_date);
-	std::cout << it->second << std::endl;
-
-
-
+		throw std::out_of_range("Value exceeds maximum limit");
 }
 
 void	BitcoinExchange::processLine(const string_t& line)
 {
-	parseDate(line);
-	validateDate();
-	printMatchedValue();
-}
-
-void	BitcoinExchange::mapCurrentDate(const string_t& line)
-{
-	Date btcDate;
-
-	size_t pos = line.find(',');
-	string_t dateStr = line.substr(0, pos);
-	string_t valueStr = line.substr(pos + 1);
-
-	std::sscanf(dateStr.c_str(), "%d-%d-%d"
-				, &btcDate.year, &btcDate.month, &btcDate.day);
-
-	_btc[btcDate] = atof(valueStr.c_str());
-}
-
-void	BitcoinExchange::createBTCTable()
-{
-	std::ifstream file(DATA_FILE);
-	if (!file.is_open())
-		throw std::runtime_error("Could not open data file: " + string_t(DATA_FILE));
-	string_t line;
-	
-	while (std::getline(file, line))
-		mapCurrentDate(line);
-	
-	file.close();
+	try{
+		parseDate(line);
+		validateDate();
+		printMatchedValue();
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << RED << "Error: " << YELLOW << line << RESET << " - " << e.what() << std::endl;
+		return;
+	}
 }
 
 void	BitcoinExchange::runFile(const string_t& input)
@@ -131,11 +87,15 @@ void	BitcoinExchange::runFile(const string_t& input)
 	createBTCTable();
 
 	string_t line;
+	bool firstLine = true;
 	while (std::getline(file, line))
 	{
+		if (firstLine)
+		{
+			firstLine = false;
+			continue;
+		}
 		processLine(line);
-
-		// std::cout << "Processing line: " << line << std::endl;
 	}
 
 	file.close();
@@ -150,3 +110,10 @@ bool Date::operator<(const Date& other) const
 	return day < other.day;
 }
 
+std::ostream& operator<<(std::ostream& os, const Date& date)
+{
+	os	<< date.year << "-" 
+    	<< std::setfill('0') << std::setw(2) << date.month << "-"
+    	<< std::setfill('0') << std::setw(2) << date.day;
+	return os;
+}

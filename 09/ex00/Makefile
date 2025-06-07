@@ -18,7 +18,10 @@ INCLUDES := -Iincludes
 SRC_DIR := srcs
 OBJ_DIR := objs
 SRC_FILES := $(SRC_DIR)/main.cpp \
-			$(SRC_DIR)/BitcoinExchange.cpp
+			 $(SRC_DIR)/BitcoinExchange.cpp \
+			 $(SRC_DIR)/BitcoinDatabase.cpp \
+			 $(SRC_DIR)/BitcoinUtils.cpp \
+			 
 
 OBJ_FILES := $(SRC_FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 NAME := bitcoin
