@@ -6,6 +6,7 @@
 #include <vector>
 #include <fstream>
 #include <stdlib.h>
+#include <map>
 
 
 #define RESET		"\033[0m"
@@ -15,7 +16,8 @@
 #define GREEN		"\033[32m"
 #define CYAN		"\033[36m"
 
-
+#define MAX_VALUE	1000.0
+#define DATA_FILE	"data.csv"
 typedef std::string string_t;
 
 struct Date
@@ -23,6 +25,7 @@ struct Date
 	int year;
 	int month;
 	int day;
+	bool operator<(const Date& other) const;
 };
 
 /**
@@ -44,9 +47,13 @@ public:
 	void 	parseDate(const string_t& line);
 	bool	validateDate();
 	int		daysInMonth();
+	void 	createBTCTable();
+	void 	mapCurrentDate(const string_t& line);
+	void 	printMatchedValue();
 
 private:
-	Date	_date;
-	double	_value;
+	Date					_date;
+	double					_value;
+	std::map<Date, double>	_btc;
 
 };

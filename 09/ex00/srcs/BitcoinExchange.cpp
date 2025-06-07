@@ -39,7 +39,7 @@ void	BitcoinExchange::parseDate(const string_t& line)
 
 	if (_value < 0)
 		std::cerr << RED << "Error: Negative value: " << _value << RESET << std::endl;
-	else if (_value > 1000)
+	else if (_value > MAX_VALUE)
 		std::cerr << RED << "Error: Value exceeds 1000: " << _value << RESET << std::endl;
 	else
 	std::cout << "Parsed Date: " << _date.year << "-" << _date.month << "-" << _date.day
@@ -76,21 +76,59 @@ bool	BitcoinExchange::validateDate()
 		return false;
 	}
 	daysInMonth();
+	return true;
+}
+
+void	BitcoinExchange::printMatchedValue()
+{
+	std::map<Date, double>::iterator it = _btc.lower_bound(_date);
+	std::cout << it->second << std::endl;
+
+
+
 }
 
 void	BitcoinExchange::processLine(const string_t& line)
 {
 	parseDate(line);
 	validateDate();
-
+	printMatchedValue();
 }
 
+void	BitcoinExchange::mapCurrentDate(const string_t& line)
+{
+	Date btcDate;
+
+	size_t pos = line.find(',');
+	string_t dateStr = line.substr(0, pos);
+	string_t valueStr = line.substr(pos + 1);
+
+	std::sscanf(dateStr.c_str(), "%d-%d-%d"
+				, &btcDate.year, &btcDate.month, &btcDate.day);
+
+	_btc[btcDate] = atof(valueStr.c_str());
+}
+
+void	BitcoinExchange::createBTCTable()
+{
+	std::ifstream file(DATA_FILE);
+	if (!file.is_open())
+		throw std::runtime_error("Could not open data file: " + string_t(DATA_FILE));
+	string_t line;
+	
+	while (std::getline(file, line))
+		mapCurrentDate(line);
+	
+	file.close();
+}
 
 void	BitcoinExchange::runFile(const string_t& input)
 {
 	std::ifstream file(input.c_str());
 	if (!file.is_open())
 		throw std::runtime_error("Could not open file: " + input);
+
+	createBTCTable();
 
 	string_t line;
 	while (std::getline(file, line))
@@ -102,3 +140,13 @@ void	BitcoinExchange::runFile(const string_t& input)
 
 	file.close();
 }
+
+bool Date::operator<(const Date& other) const
+{
+	if (year != other.year)
+		return year < other.year;
+	if (month != other.month)
+		return month < other.month;
+	return day < other.day;
+}
+
