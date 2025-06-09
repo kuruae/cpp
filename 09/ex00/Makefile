@@ -24,7 +24,7 @@ SRC_FILES := $(SRC_DIR)/main.cpp \
 			 
 
 OBJ_FILES := $(SRC_FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
-NAME := bitcoin
+NAME := btc
 ########## RULES ##########
 all: $(NAME)
 
