@@ -42,6 +42,8 @@ void	BitcoinExchange::validateDate()
 
 void	BitcoinExchange::parseDate(const string_t& line)
 {
+	if (line.empty())
+		throw std::runtime_error("Empty line");
 	size_t pos = findSeparator(line, '|');
 
 	string_t dateStr = line.substr(0, pos);
@@ -54,7 +56,7 @@ void	BitcoinExchange::parseDate(const string_t& line)
 	int matches = std::sscanf(dateStr.c_str(), "%d-%d-%d%c"
 					, &_date.year, &_date.month, &_date.day, &extra);
 	if (matches != 3)
-		throw std::runtime_error("Garbage values after date");
+		throw std::runtime_error("Invalid date format");
 
 	_value = convertToDoubleOrThrow(valueStr);
 

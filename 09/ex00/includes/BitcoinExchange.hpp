@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <map>
 #include <iomanip>
+#include <limits>
+#include <cmath>
 
 #define RESET		"\033[0m"
 #define YELLOW		"\033[33m"

@@ -6,6 +6,8 @@ double	convertToDoubleOrThrow(const string_t& str)
 	double value = strtod(str.c_str(), &endptr);
 	if (*endptr != '\0')
 		throw std::runtime_error("Invalid number format");
+	if (std::isnan(value))
+		throw std::runtime_error("Not a number");
 	return value;
 }
 

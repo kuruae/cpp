@@ -4,8 +4,8 @@ int main(int argc, char **argv)
 {
 	if (argc != 2)
 	{
-		std::cerr	<< RED << "Error: Incorrect number of arguments.\n"
-					<< "Usage: " << argv[0] << " <filename>" << RESET << std::endl;
+		std::cerr	<< "Error: Incorrect number of arguments.\n"
+					<< "Usage: " << argv[0] << " <filename>" << std::endl;
 		return 1;
 	}
 
