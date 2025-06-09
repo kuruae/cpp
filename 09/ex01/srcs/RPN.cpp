@@ -79,10 +79,10 @@ int RPN::calculate(int a, int b, char op) const
 			return (a * b);
 		case '/':
 			if (b == 0)
-				throw std::runtime_error("Division by zero");
+				throw std::domain_error("Division by zero");
 			return (a / b);
 		default:
-			throw std::runtime_error("Invalid operator");
+			throw std::invalid_argument("Invalid operator");
 	}
 }
 
