@@ -17,12 +17,11 @@ INCLUDES := -Iincludes
 ########## FILES ##########
 SRC_DIR := srcs
 OBJ_DIR := objs
-SRC_FILES := $(SRC_DIR)/main.cpp \
-			 $(SRC_DIR)/PmergeMe.cpp
+SRC_FILES := $(SRC_DIR)/main.cpp
 			 
 
 OBJ_FILES := $(SRC_FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
-NAME := 
+NAME := PmergeMe
 ########## RULES ##########
 all: $(NAME)
 
