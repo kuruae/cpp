@@ -9,12 +9,12 @@
 #include <ctime>
 #include <cmath>
 
-#define RESET		"\033[0m"
-#define YELLOW		"\033[33m"
-#define BOLD		"\033[1m"
-#define RED			"\033[31m"
-#define GREEN		"\033[32m"
-#define CYAN		"\033[36m"
+#define RESET       "\033[0m"
+#define YELLOW      "\033[33m"
+#define BOLD        "\033[1m"
+#define RED         "\033[31m"
+#define GREEN       "\033[32m"
+#define CYAN        "\033[36m"
 
 typedef std::string string_t;
 
@@ -24,114 +24,134 @@ public:
 	typedef typename Container::iterator Iterator;
 	typedef typename Container::value_type value_type;
 
+
+
 	PmergeMe() {}
 	~PmergeMe() {}
 
 	// Main sorting function - entry point
 	void mergeInsertionSort(Container& container) {
-		if (container.size() <= 1) return;
-		mergeInsertionSortRecursive(container, 1);
+		if (container.size() <= 1)
+			return;
+		sortWithMergeInsertion(container, 1);
 	}
 
-	void printContainer(Container& container)
-	{
+	void printContainer(Container& container) {
 		for (Iterator it = container.begin(); it != container.end(); ++it)
 			std::cout << *it << " ";
 		std::cout << std::endl;
 	}
 
 private:
-	PmergeMe(const PmergeMe& other) {(void)other; }
-	PmergeMe& operator=(const PmergeMe& other) {
+	PmergeMe(const PmergeMe& other) { (void)other; }
+	PmergeMe& operator=(const PmergeMe& other)
+	{
 		(void)other;
 		return *this;
 	}
 
-	// Recursive merge-insertion sort with order parameter
-	void mergeInsertionSortRecursive(Container& vec, int order) {
-		int unit = vec.size() / order;  // Number of groups of size 'order'
-		if (unit < 2)
+	struct SortChains
+	{
+		Container mainChain;
+		Container pendingElements;
+		Container leftoverElements;
+	};
+
+
+	
+	// Recursive merge-insertion sort with specified group size
+	void sortWithMergeInsertion(Container& container, int groupSize) {
+		int groupCount = container.size() / groupSize;
+		if (groupCount < 2)
 			return;
 		
-		bool hasOdd = (unit % 2 == 1);
+		bool hasOddNumberOfGroups = (groupCount % 2 == 1);
+		Iterator startPos = container.begin();
+		Iterator endPos = container.begin() + ((groupSize * groupCount) - (hasOddNumberOfGroups * groupSize));
 		
 		// Step 1: Compare and swap pairs of groups
-		Iterator start = vec.begin();
-		Iterator end = vec.begin() + ((order * unit) - (hasOdd * order));
+		comparePairsAndSwap(startPos, endPos, groupSize);
 		
-		for (Iterator it = start; it < end; it += order * 2) {
+		// Step 2: Recursively sort with double the group size
+		sortWithMergeInsertion(container, groupSize * 2);
+		
+		// Step 3: Split into main chain and pending elements using our new struct
+		SortChains chains;
+		distributeElements(container, chains, groupSize, groupCount);
+		
+		// Step 4: Insert pending elements using binary search guided by Jacobsthal sequence
+		insertPendingElements(chains, container, groupSize);
+	}
+
+	// Compare and swap adjacent group pairs if needed
+	void comparePairsAndSwap(Iterator start, Iterator end, int groupSize) {
+		for (Iterator it = start; it < end; it += groupSize * 2) {
 			// Compare last elements of each group in the pair
-			if (*(it + (order - 1)) > *(it + ((order * 2) - 1))) {
-				// Swap the entire groups
-				for (int i = 0; i < order; i++) {
-					std::swap(*(it + i), *(it + i + order));
+			if (*(it + (groupSize - 1)) > *(it + ((groupSize * 2) - 1))) {
+				// Swap entire groups
+				for (int i = 0; i < groupSize; i++) {
+					std::swap(*(it + i), *(it + i + groupSize));
 				}
 			}
 		}
-		
-		// Step 2: Recursively sort with double the order (pairs of groups)
-		mergeInsertionSortRecursive(vec, order * 2);
-		
-		// Step 3: Separate into main chain, pending chain, and leftover
-		Container main;
-		Container pend;
-		Container left;
-		
+	}
+
+	// Distribute elements into main chain, pending elements, and leftover
+	void distributeElements(Container& source, SortChains& chains, int groupSize, int groupCount) {
 		// First two groups go to main chain (they're already sorted)
-		if (unit >= 2) {
-			main.insert(main.end(), vec.begin(), vec.begin() + order);
-			main.insert(main.end(), vec.begin() + order, vec.begin() + order * 2);
+		if (groupCount >= 2) {
+			chains.mainChain.insert(chains.mainChain.end(), source.begin(), source.begin() + groupSize * 2);
 		}
 		
 		// Distribute remaining groups alternately
-		int i = 2;
-		while (i < unit) {
+		for (int i = 2; i < groupCount; i++) {
+			Iterator groupStart = source.begin() + groupSize * i;
+			Iterator groupEnd = groupStart + groupSize;
+			
 			if (i % 2 == 1) {
 				// Odd index groups go to main chain (larger elements)
-				main.insert(main.end(), vec.begin() + order * i, vec.begin() + (order * i) + order);
+				chains.mainChain.insert(chains.mainChain.end(), groupStart, groupEnd);
 			} else {
-				// Even index groups go to pending chain (smaller elements to be inserted)
-				pend.insert(pend.end(), vec.begin() + order * i, vec.begin() + (order * i) + order);
+				// Even index groups go to pending elements (smaller elements to be inserted)
+				chains.pendingElements.insert(chains.pendingElements.end(), groupStart, groupEnd);
 			}
-			i++;
 		}
 		
 		// Handle leftover elements if any
-		if (vec.size() > static_cast<size_t>(order * i)) {
-			left.insert(left.end(), vec.begin() + order * i, vec.end());
+		if (source.size() > static_cast<size_t>(groupSize * groupCount)) {
+			chains.leftoverElements.insert(chains.leftoverElements.end(), 
+								   source.begin() + groupSize * groupCount, 
+								   source.end());
 		}
-		
-		// Step 4: Insert pending elements using Jacobsthal sequence
-		binaryInsertion(main, pend, left, vec, order);
 	}
 
 	// Generate Jacobsthal sequence up to n
-	void getJacobsthal(Container& jacob, size_t n) {
-		if (jacob.empty()) {
-			jacob.push_back(3);  // Start with 3 (first useful Jacobsthal number for insertion)
+	void generateJacobsthalSequence(Container& sequence, size_t upperLimit) {
+		if (sequence.empty()) {
+			sequence.push_back(3);  // Start with 3 (first useful number for insertion)
 		}
 		
-		size_t prev = 1;
-		while (static_cast<size_t>(jacob.back()) < n) {
-			jacob.push_back(jacob.back() + 2 * prev);
-			prev = *(jacob.end() - 2);
+		size_t prevValue = 1;
+		while (static_cast<size_t>(sequence.back()) < upperLimit) {
+			sequence.push_back(sequence.back() + 2 * prevValue);
+			prevValue = *(sequence.end() - 2);
 		}
 	}
 
-	// Insert a single group using binary search
-	void insertionValue(Container& main, Container& pend, int idx, int order, int maxSearch) {
+	// Insert a group using binary search
+	void insertGroupWithBinarySearch(Container& mainChain, Container& pendingElements, 
+									int groupIdx, int groupSize, int searchLimit) {
 		int left = 1;
-		int right = maxSearch;
+		int right = searchLimit;
 		
 		// Binary search for insertion position
 		while (left <= right) {
 			int mid = (left + right) / 2;
-			// Compare last elements of groups (which represent the groups)
-			if (main.at(mid * order - 1) == pend.at(idx * order - 1)) {
+			if (mainChain.at(mid * groupSize - 1) == pendingElements.at(groupIdx * groupSize - 1)) {
 				left = mid;
 				break;
 			}
-			else if (main.at(mid * order - 1) > pend.at(idx * order - 1)) {
+			else if (mainChain.at(mid * groupSize - 1) > pendingElements.at(groupIdx * groupSize - 1)) {
 				right = mid - 1;
 			}
 			else {
@@ -140,66 +160,80 @@ private:
 		}
 		
 		// Insert the entire group at the found position
-		main.insert(main.begin() + (left - 1) * order, 
-					pend.begin() + idx * order - order, 
-					pend.begin() + idx * order);
+		mainChain.insert(mainChain.begin() + (left - 1) * groupSize, 
+						pendingElements.begin() + groupIdx * groupSize - groupSize, 
+						pendingElements.begin() + groupIdx * groupSize);
 	}
 
-	// Main insertion function using Jacobsthal sequence
-	void binaryInsertion(Container& main, Container& pend, Container& left, Container& vec, int order) {
-		size_t prev;
-		Container jacob;
-		size_t idx;
+	// Insert pending elements using Jacobsthal sequence
+	void insertPendingElements(SortChains& chains, Container& originalContainer, int groupSize) {
+		Container jacobsthalSeq;
+		jacobsthalSeq.push_back(3);
+		generateJacobsthalSequence(jacobsthalSeq, chains.pendingElements.size() / groupSize);
 		
-		// Generate Jacobsthal sequence
-		jacob.push_back(3);
-		getJacobsthal(jacob, pend.size() / order);
-		
-		if (!pend.empty()) {
+		if (!chains.pendingElements.empty()) {
 			// Insert elements according to Jacobsthal sequence
-			for (size_t i = 0; i < jacob.size(); i++) {
-				prev = (jacob[i] == 3) ? 0 : jacob[i - 1] - 1;
-				idx = jacob[i] - 1;
-				
-				// Don't exceed available elements
-				if (idx > pend.size() / order) {
-					idx = pend.size() / order;
-				}
-				
-				// Insert elements in reverse order within Jacobsthal group
-				while (idx > prev) {
-					insertionValue(main, pend, idx, order, main.size() / order);
-					idx--;
-				}
+			insertElementsFollowingJacobsthal(chains.mainChain, chains.pendingElements, jacobsthalSeq, groupSize);
+		}
+		
+		// Copy sorted main chain back to original container
+		copyMainChainToOriginal(chains, originalContainer, groupSize);
+	}
+	
+	// Insert elements following Jacobsthal sequence
+	void insertElementsFollowingJacobsthal(Container& mainChain, Container& pendingElements, 
+										 Container& jacobsthalSeq, int groupSize) {
+		size_t pendingGroupCount = pendingElements.size() / groupSize;
+		
+		// Process each Jacobsthal range
+		for (size_t i = 0; i < jacobsthalSeq.size(); i++) {
+			size_t prevIdx = (jacobsthalSeq[i] == 3) ? 0 : jacobsthalSeq[i - 1] - 1;
+			size_t currIdx = jacobsthalSeq[i] - 1;
+			
+			// Don't exceed available elements
+			if (currIdx > pendingGroupCount) {
+				currIdx = pendingGroupCount;
 			}
 			
-			// Insert any remaining elements after last Jacobsthal number
-			if (static_cast<size_t>(*(jacob.end() - 1) - 1) < pend.size() / order) {
-				int i = pend.size() / order;
-				while (i > *(jacob.end() - 1) - 1) {
-					insertionValue(main, pend, i, order, main.size() / order);
-					i--;
-				}
+			// Insert elements in reverse order within Jacobsthal range
+			while (currIdx > prevIdx) {
+				insertGroupWithBinarySearch(mainChain, pendingElements, currIdx, 
+										   groupSize, mainChain.size() / groupSize);
+				currIdx--;
 			}
 		}
 		
-		// Copy sorted main chain back to original vector
-		Iterator s = vec.begin();
-		for (size_t i = 0; i < main.size(); i++) {
-			*s = main.at(i);
-			++s;
+		// Insert any remaining elements after last Jacobsthal number
+		size_t lastJacobsthalValue = jacobsthalSeq.back() - 1;
+		if (lastJacobsthalValue < pendingGroupCount) {
+			for (size_t i = pendingGroupCount; i > lastJacobsthalValue; i--) {
+				insertGroupWithBinarySearch(mainChain, pendingElements, i, 
+										  groupSize, mainChain.size() / groupSize);
+			}
+		}
+	}
+	
+	// Copy main chain back to original container and handle leftovers
+	void copyMainChainToOriginal(SortChains& chains, Container& originalContainer, int groupSize) {
+		// Copy sorted main chain
+		Iterator destIt = originalContainer.begin();
+		for (size_t i = 0; i < chains.mainChain.size(); i++) {
+			*destIt = chains.mainChain.at(i);
+			++destIt;
 		}
 		
 		// Handle leftover elements
-		if (left.size() == 1 && order == 1) {
+		if (chains.leftoverElements.size() == 1 && groupSize == 1) {
 			// Single leftover element - insert using binary search
-			Iterator pos = std::lower_bound(vec.begin(), vec.begin() + main.size(), *left.begin());
-			vec.insert(pos, *left.begin());
-		} else if (!left.empty()) {
+			Iterator pos = std::lower_bound(originalContainer.begin(), 
+										  originalContainer.begin() + chains.mainChain.size(), 
+										  *chains.leftoverElements.begin());
+			originalContainer.insert(pos, *chains.leftoverElements.begin());
+		} else if (!chains.leftoverElements.empty()) {
 			// Multiple leftover elements - append them
-			for (size_t i = 0; i < left.size(); i++) {
-				*s = left.at(i);
-				++s;
+			for (size_t i = 0; i < chains.leftoverElements.size(); i++) {
+				*destIt = chains.leftoverElements.at(i);
+				++destIt;
 			}
 		}
 	}
