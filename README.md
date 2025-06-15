@@ -1,4 +1,4 @@
-# C++ Modules (42 School)
+# C++ Modules (42 Paris)
 
 ## Module 00 - Introduction to C++
 - **ex00**: Basic string manipulation (megaphone)
